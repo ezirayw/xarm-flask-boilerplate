@@ -1,0 +1,52 @@
+import sys
+import time
+import datetime
+import threading
+
+"""
+# xArm-Python-SDK: https://github.com/xArm-Developer/xArm-Python-SDK
+# git clone git@github.com:xArm-Developer/xArm-Python-SDK.git
+# cd xArm-Python-SDK
+# python setup.py install
+"""
+from xarm import version
+from xarm.wrapper import XArmAPI
+
+print('xArm-Python-SDK Version:{}'.format(version.__version__))
+
+arm = XArmAPI('10.241.32.169')
+arm.clean_warn()
+arm.clean_error()
+arm.motion_enable(True)
+arm.set_mode(0)
+arm.set_state(0)
+time.sleep(1)
+
+params = {'speed': 100, 'acc': 2000, 'angle_speed': 20, 'angle_acc': 500, 'events': {}, 'variables': {}, 'quit': False}
+
+
+# Register error/warn changed callback
+def error_warn_change_callback(data):
+    if data and data['error_code'] != 0:
+        arm.set_state(4)
+        params['quit'] = True
+        print('err={}, quit'.format(data['error_code']))
+        arm.release_error_warn_changed_callback(error_warn_change_callback)
+arm.register_error_warn_changed_callback(error_warn_change_callback)
+
+
+# Register state changed callback
+def state_changed_callback(data):
+    if data and data['state'] == 4:
+        if arm.version_number[0] >= 1 and arm.version_number[1] >= 1 and arm.version_number[2] > 0:
+            params['quit'] = True
+            print('state=4, quit')
+            arm.release_state_changed_callback(state_changed_callback)
+arm.register_state_changed_callback(state_changed_callback)
+
+
+# Register counter value changed callback
+if hasattr(arm, 'register_count_changed_callback'):
+    def count_changed_callback(data):
+        print('counter val: {}'.format(data['count']))
+    arm.register_count_changed_callback(count_changed_callback)
