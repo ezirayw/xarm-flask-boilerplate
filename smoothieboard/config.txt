@@ -326,7 +326,7 @@ custom_menu.power_off.command              M81               #
 
 ## Network settings
 # See http://smoothieware.org/network
-network.enable                               false            # Enable the ethernet network services
+network.enable                               true            # Enable the ethernet network services
 network.webserver.enable                     true             # Enable the webserver
 network.telnet.enable                        true             # Enable the telnet server
 network.ip_address                           auto             # Use dhcp to get ip address

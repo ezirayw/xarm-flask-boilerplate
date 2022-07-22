@@ -1,10 +1,13 @@
-import sys, time, datetime, threading, os, json, yaml, serial
-import RPi.GPIO as GPIO
+import sys, time, datetime, threading, os, json, serial
+import yaml
 from flask import Flask, render_template, request, redirect, url_for
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import numpy as np
-
+import aiohttp
+import asyncio
+import requests
+import shutil
 
 ############# FLASK INITIALIZATION CODE ##################
 
@@ -15,54 +18,47 @@ users = {
     "k2": generate_password_hash("pCh3HhLhHyMqw2ZEY6UrXqoM9eU*")
 }
 
+# get settings from yaml file to setup server
+SERVER_PATH = os.path.dirname(os.path.abspath(__file__))
+CONFIG_PATH = os.path.join(SERVER_PATH, 'server_conf.yml')
+DILUTIONS_PATH = os.path.join(SERVER_PATH)
+CALIBRATION_PATH = os.path.join(SERVER_PATH, 'calibrations.json')
+
+with open(CONFIG_PATH,'r') as config:
+    settings = yaml.safe_load(config)
+XARM_IP = settings['xarm_ip']
+RPI_IP = settings['rpi_ip']
+API_KEY = settings['octoprint_api_key']
+BASE_OCTOPRINT_PATH = settings['base_octoprint_path']
+PUMP_SETTINGS = settings['pump_settings']
+
+# create urls for each octoprint server instance (1 per syringe pump)
+# create necessary gcode directories for each syringe pump
+OCTOPRINT_URLS = {}
+for smoothie in PUMP_SETTINGS['smoothies']:
+    url = "http://" + RPI_IP + str(PUMP_SETTINGS['smoothies'][smoothie]['port'])
+    OCTOPRINT_URLS[smoothie] = url
+    gcode_dir_exist = os.path.exists(PUMP_SETTINGS['smoothies'][smoothie]['gcode_path'])
+    if gcode_dir_exist:
+        shutil.rmtree(PUMP_SETTINGS['smoothies'][smoothie]['gcode_path'])
+    os.makedirs(PUMP_SETTINGS['smoothies'][smoothie]['gcode_path'])
+
 @auth.verify_password
 def verify_password(username, password):
     if username in users and \
             check_password_hash(users.get(username), password):
         return username
 
-config_file = os.path.dirname(os.path.abspath(__file__)) + "/conf.yml"
 @app.route('/route_check_status', methods=['POST'])
 @auth.login_required
 def route_check_status():
-    with open(config_file,'r') as config:
-        if (yaml.safe_load(config)['status'] != 'ready'):
+    with open(CONFIG_PATH,'r') as config:
+        if (yaml.safe_load(config)['arm_status'] != 'ready'):
             return 'busy'
         else:
             return 'ready'
 
-def changeStatus(status):
-    with open(config_file,'r') as config:
-        current_conf = yaml.safe_load(config)
-    current_conf['status'] = status
-    with open(config_file,'w') as config:
-        yaml.dump(current_conf,config)
-    time.sleep(.1)
-
 ############### END FLASK INIT ##################
-
-
-############## SMOOTHIE/PI HAT INITIALIZATION CODE ##################
-with open(config_file,'r') as config:
-    current_conf = yaml.safe_load(config)
-    s = serial.Serial(current_conf['smoothie_port'],115200)
-s.write("\r\n\r\n".encode('ascii'))
-time.sleep(.2)
-s.flushInput()
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(29, GPIO.OUT)
-GPIO.setup(31, GPIO.OUT)
-
-GPIO.output(29, GPIO.LOW)
-time.sleep(.1)
-GPIO.output(31, GPIO.LOW)
-time.sleep(.1)
-
-############### END SMOOTHIE/PI HAT INIT ##################
-
-
 ############## xARM INITIALIZATION CODE ##################
 
 """
@@ -76,16 +72,17 @@ from xarm.wrapper import XArmAPI
 
 print('xArm-Python-SDK Version:{}'.format(version.__version__))
 
-arm = XArmAPI('10.241.32.169')
+arm = XArmAPI(XARM_IP)
 arm.clean_warn()
 arm.clean_error()
-arm.motion_enable(True)
+arm.motion_enable(enable=True)
 arm.set_mode(0)
-arm.set_state(0)
+arm.set_state(state=0)
+arm.reset(wait=True)
+
 time.sleep(1)
 
 params = {'speed': 100, 'acc': 2000, 'angle_speed': 20, 'angle_acc': 500, 'events': {}, 'variables': {}, 'quit': False}
-
 
 # Register error/warn changed callback
 def error_warn_change_callback(data):

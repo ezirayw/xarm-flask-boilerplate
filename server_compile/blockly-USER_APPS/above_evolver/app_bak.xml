@@ -1,0 +1,59 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables/>
+  <block type="set_acceleration" id="ydn1s^PDi/dIiRk=5,qr" x="-137" y="-138">
+    <field name="acceleration">100</field>
+    <next>
+      <block type="set_speed" id="L$G$p4E^}mVl,8v=/{De">
+        <field name="speed">5</field>
+        <next>
+          <block type="move_joints" id="f/!6nNqAlBnc)Uv#a%Yj">
+            <field name="i">0</field>
+            <field name="j">-57.8</field>
+            <field name="k">-31.6</field>
+            <field name="l">89.4</field>
+            <field name="m">0</field>
+            <field name="wait">TRUE</field>
+            <value name="btn_move">
+              <block type="btn_move" id="6CibBs@jBD=:xhU9VaU="/>
+            </value>
+            <value name="btn_edit">
+              <block type="btn_edit" id="m.HUH8LSpLSzGP61CBO5"/>
+            </value>
+            <next>
+              <block type="move_joints" id="N#{.yohp0!ZhuXVTM#o9">
+                <field name="i">-65.1</field>
+                <field name="j">2.1</field>
+                <field name="k">-77.5</field>
+                <field name="l">75.4</field>
+                <field name="m">0</field>
+                <field name="wait">TRUE</field>
+                <value name="btn_move">
+                  <block type="btn_move" id="Zw/?y*h#Uswb^F4V0dm$"/>
+                </value>
+                <value name="btn_edit">
+                  <block type="btn_edit" id="S#.SgU-%yLdjp@dBE$4x"/>
+                </value>
+                <next>
+                  <block type="move_joints" id="6+;eeXii1Eez04)J)#07">
+                    <field name="i">-100.5</field>
+                    <field name="j">-5.5</field>
+                    <field name="k">-68.9</field>
+                    <field name="l">74.4</field>
+                    <field name="m">0</field>
+                    <field name="wait">TRUE</field>
+                    <value name="btn_move">
+                      <block type="btn_move" id="MIQZ^4!)3Uv7?vVe**/7"/>
+                    </value>
+                    <value name="btn_edit">
+                      <block type="btn_edit" id="MM0;Sg@=-sk=$Mu327xE"/>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

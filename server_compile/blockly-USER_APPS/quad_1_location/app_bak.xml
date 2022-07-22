@@ -1,0 +1,27 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables/>
+  <block type="set_speed" id="J)TIlK@TFOJzdP50y!JA" x="-162" y="-162">
+    <field name="speed">5</field>
+    <next>
+      <block type="set_acceleration" id="+bdyf$Hz;:1_+uyIAPum">
+        <field name="acceleration">100</field>
+        <next>
+          <block type="move_joints" id="M.VN4:@)#YxqdOtA)[}r">
+            <field name="i">-81.9</field>
+            <field name="j">-4.2</field>
+            <field name="k">-63.8</field>
+            <field name="l">68</field>
+            <field name="m">-180</field>
+            <field name="wait">TRUE</field>
+            <value name="btn_move">
+              <block type="btn_move" id="YJs:3Tx:^BOs$6rRfd5L"/>
+            </value>
+            <value name="btn_edit">
+              <block type="btn_edit" id="uaZ!A|;.;a:`2wNVfsFG"/>
+            </value>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

@@ -1,4 +1,4 @@
-
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    with open(CONFIG_PATH,'r') as config:
+        port = yaml.safe_load(config)['server_port']
+    app.run(host='0.0.0.0', port=port)
