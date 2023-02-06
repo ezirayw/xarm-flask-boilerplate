@@ -10,7 +10,6 @@ import requests
 import shutil
 
 ############# FLASK INITIALIZATION CODE ##################
-
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
@@ -60,7 +59,6 @@ def route_check_status():
 
 ############### END FLASK INIT ##################
 ############## xARM INITIALIZATION CODE ##################
-
 """
 # xArm-Python-SDK: https://github.com/xArm-Developer/xArm-Python-SDK
 # git clone git@github.com:xArm-Developer/xArm-Python-SDK.git

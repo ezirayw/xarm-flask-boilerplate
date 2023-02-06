@@ -1,9 +1,4 @@
 ## This script is to define smoothieboard related functions, such as priming fluidic lines or dispensing volumes into vials
-def convert_to_steps(volume, test=False):
-    if test:
-        return 0
-    else:
-        return 100
 
 def write_gcode(mode, instructions, gcode='', gcode_path=''):
     """ Write gcode file for dispensing volumes into vials """
@@ -89,29 +84,6 @@ def write_gcode(mode, instructions, gcode='', gcode_path=''):
         f.write(gcode)
         f.close()
 
-def media_transform(fluid_command, test=False):
-    """ Convert fluid_command from eVOLVER server to pump motor steps for vial dilutions. Information will be stored in an read accessible JSON file """
-    dilutions = {}
-
-    # scan through fluid command and convert dilution volumes to stepper motor steps based on volume --> steps calibration
-    for pump in fluid_command:
-        pump_json = {}
-
-        for quad in range(len(fluid_command[pump])):
-            quad_name = 'quad_{0}'.format(quad)
-            pump_json[quad_name] = {}
-
-            for vial in range(18):
-                vial_name = 'vial_{0}'.format(vial)
-                pump_json[quad_name][vial_name] = convert_to_steps(fluid_command[pump][quad][vial], test)
-        dilutions[pump] = pump_json
-
-    # save dilutiion steps to JSON
-    dilutions_path = os.path.join(DILUTIONS_PATH, 'dilutions.json')
-    with open(dilutions_path, 'w') as f:
-        json.dump(dilutions, f)
-    return dilutions
-
 async def post_gcode_async(session, gcode_path, smoothie):
     """ Return response status of POST request to Ocotprint server for actuating syringe pump """
     payload = {'file': open(gcode_path, 'rb'), 'print':'true'}
@@ -175,9 +147,8 @@ async def prime_pumps_helper():
     print_string = ''
 
     for pump in PUMP_SETTINGS['pumps']:
-        if PUMP_SETTINGS['pumps'][pump]['type'] == 'fluid':
-            print_string = print_string + '{0} pump'.format(pump)
-            instructions[pump] = PUMP_SETTINGS['priming_steps']
+        print_string = print_string + '{0} pump'.format(pump)
+        instructions[pump] = PUMP_SETTINGS['priming_steps']
     write_gcode('prime_pumps', instructions)
 
     # create tasks for prime pump events
@@ -235,9 +206,8 @@ async def fill_tubing_helper():
     print_string = ''
 
     for pump in PUMP_SETTINGS['pumps']:
-        if PUMP_SETTINGS['pumps'][pump]['type'] == 'fluid':
-            print_string = print_string + '{0} pump '.format(pump)
-            instructions[pump] = 300
+        print_string = print_string + '{0} pump '.format(pump)
+        instructions[pump] = 300
     write_gcode('fill_tubing_in', instructions)
     write_gcode('fill_tubing_out', instructions)
 
@@ -327,7 +297,7 @@ async def fill_tubing_helper():
     await session.close()
     return 'fill tubing cycle success'
 
-async def influx_helper(fluid_command, quads, test=False):
+async def influx_helper(pump_commands):
     """ Main method for dilution routine for specified quads. Called every time eVOLVER client sends fluid_command to fluidics server """
     # start asyncio Client Session
     session = aiohttp.ClientSession()
@@ -337,12 +307,8 @@ async def influx_helper(fluid_command, quads, test=False):
     coordinate_config = json.load(f1)
     f1.close()
 
-    # get dilution steps for fluid command
-    test = bool(test)
-    dilutions = media_transform(fluid_command, test)
-
     # loop through vials and execute fluidic events
-    for quad in quads:
+    for quad in pump_commands['active_quads']:
         quad_name = 'quad_{0}'.format(quad)
 
         # create data structure to map fluidic events
@@ -392,7 +358,7 @@ async def influx_helper(fluid_command, quads, test=False):
                     active_vial_name = 'vial_{0}'.format(active_vials[i])
                     active_vial = active_vials[i]
                     active_pump = active_pumps[i]
-                    pump_steps = dilutions[active_pump][quad_name][active_vial_name]
+                    pump_steps = pump_commands[active_pump][quad_name][active_vial_name]
                     instructions[active_pump] = pump_steps
                 write_gcode('volume_in', instructions)
                 write_gcode('volume_out', instructions)

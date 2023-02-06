@@ -18,7 +18,6 @@ PORT = config["server_port"]
 URL = "http://" + IP + ":" + str(PORT)
 print(URL)
 
-
 def flask_request(url,payload):
     try:
         headers = config["headers"]

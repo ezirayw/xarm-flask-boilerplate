@@ -1,15 +1,8 @@
 ---
 # network settings
-xarm_ip: "192.168.1.200"
-rpi_ip: "192.168.1.9"
 headers:
     Content-Type: "application/json"
     Authorization: "Basic azI6cENoM0hoTGhIeU1xdzJaRVk2VXJYcW9NOWVVKg=="
     cache-control: "no-cache"
     Postman-Token: "b1dd33bd-212f-4042-9877-e959e3f90a59"
 server_port: 8080
-
-# Serial communication
-serial_port: '/dev/ttyAMA0'
-serial_baudrate: 115200
-serial_timeout: 1

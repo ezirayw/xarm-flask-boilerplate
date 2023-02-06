@@ -1,7 +1,5 @@
 ### This script helps compile the blockly functions into a single python script and uploaded
 ### to the Raspberry Pi running the xARM.
-
-
 import os, glob, subprocess
 import urllib.request, tarfile
 from xarm.tools.blockly_tool import BlocklyTool
@@ -9,7 +7,7 @@ from pathlib import Path
 import shutil
 
 xarm_ip = "192.168.1.200"
-pi_ip = "192.168.1.9"
+pi_ip = "192.168.1.4"
 server = '/fluidics'
 
 # List Directories
@@ -22,17 +20,18 @@ if user_input == 'y':
     # Delete exisiting python + blockly functions
     for f in file_paths:
         os.remove(f)
-    #blockly_folder = Path(dir_path, "blockly-USER_APPS")
-    #if blockly_folder.exists() and blockly_folder.is_dir():
-    #    shutil.rmtree(blockly_folder)
+    blockly_folder = Path(dir_path, "blockly-USER_APPS")
+    if blockly_folder.exists() and blockly_folder.is_dir():
+        shutil.rmtree(blockly_folder)
 
-#    # Download and unzip Blockly Scripts from Robot
-#    url = "http://" + xarm_ip + ":18333/project/download?path=test/xarm5/app/myapp"
-#    filename = "blockly_download.tar.gz"
-#    urllib.request.urlretrieve(url, filename)
-#    tar = tarfile.open(filename)
-#    tar.extractall('server_compile/blockly_download')
-#    tar.close()
+    # Download and unzip Blockly Scripts from Robot
+    #url = "http://" + xarm_ip + ":18333/project/download?path=test/xarm5/app/myapp"
+    #print(url)
+    filename = "blockly-USER_APPS.tar.gz"
+    #urllib.request.urlretrieve(url, filename)
+    tar = tarfile.open(filename)
+    tar.extractall('server_compile/blockly_download')
+    tar.close()
 
 blockly_functions = glob.glob(dir_path + "/blockly-USER_APPS/*")
 

@@ -1,7 +1,7 @@
 ---
 # network settings
 xarm_ip: "192.168.1.200"
-rpi_ip: "192.168.1.9:"
+rpi_ip: "192.168.1.4:"
 headers:
     Content-Type: "application/json"
     Authorization: "Basic azI6cENoM0hoTGhIeU1xdzJaRVk2VXJYcW9NOWVVKg=="
@@ -22,7 +22,6 @@ pump_settings:
       port: 5000
   pumps:
     base_media:
-      type: 'fluid' # what type of fluidic action is pump for (media input, sampling, etc)
       id: 0
       smoothie: 0
       motor_connections:
@@ -31,7 +30,6 @@ pump_settings:
         plunger: 'Y' # connection stepper motor that plunger is connected to (either X, Y, Z, E0, E1)
 
     selection_media:
-      type: 'fluid'
       id: 1
       smoothie: 0
       motor_connections:

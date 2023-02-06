@@ -1,8 +1,9 @@
 ## This script is to define all API calls to the flask server. Ensure that functions called in routes exist are pulled ./functions or ./manual
-
-# #########################   Example Scripts ####################################
-# #########################   End of Example Scripts ####################################
-
+@app.route('/get_pump_settings', methods=['POST', 'GET'])
+@auth.login_required
+def get_pump_settings():
+    """ GET pump settings from fluidics_server.conf file """
+    return PUMP_SETTINGS
 
 @app.route('/arm_test', methods=['POST'])
 @auth.login_required
@@ -66,10 +67,8 @@ def prime_pump():
 @auth.login_required
 def influx():
     """ Perform fluidic influx for target vial. Pump in and dispense dilution volume """
-    fluid_command = request.json['fluid_command']
-    quads = request.json['quads']
-    test = request.json['test']
+    pump_commands = request.json
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(influx_helper(fluid_command, quads, test))
+    loop.run_until_complete(influx_helper(pump_commands))
     return 'influx success'

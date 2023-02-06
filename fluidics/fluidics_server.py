@@ -10,7 +10,6 @@ import requests
 import shutil
 
 ############# FLASK INITIALIZATION CODE ##################
-
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
@@ -60,7 +59,6 @@ def route_check_status():
 
 ############### END FLASK INIT ##################
 ############## xARM INITIALIZATION CODE ##################
-
 """
 # xArm-Python-SDK: https://github.com/xArm-Developer/xArm-Python-SDK
 # git clone git@github.com:xArm-Developer/xArm-Python-SDK.git
@@ -111,283 +109,7 @@ if hasattr(arm, 'register_count_changed_callback'):
     arm.register_count_changed_callback(count_changed_callback)
 
 ############### END xARM INIT ##################
-def quad_1_location():
-    print('Running ' + 'quad_1_location' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 5
-    if not params['quit']:
-        params['acc'] = 100
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[-81.9, -4.2, -63.8, 68.0, -180.0], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=None)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def above_to_zero():
-    print('Running ' + 'above_to_zero' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 5
-    if not params['quit']:
-        params['acc'] = 1
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[-81.2, -27.8, -60.9, 88.8, -81.2], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=False, radius=20.0)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[0.0, -53.0, -46.1, 99.1, 0.0], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=20.0)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    if arm.error_code == 0 and not params['quit']:
-        arm.reset()
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def quad_2_location():
-    print('Running ' + 'quad_2_location' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 5
-    if not params['quit']:
-        params['acc'] = 100
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[-100.7, -3.7, -64.3, 68.0, 0.0], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=None)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def enter_vial_80():
-    print('Running ' + 'enter_vial_80' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 50
-    if not params['quit']:
-        params['acc'] = 25
-    if not params['quit']:
-        params['variables']['x_loc_1'] = 83.3
-    if not params['quit']:
-        params['variables']['x_loc_2'] = 78
-    if not params['quit']:
-        params['variables']['y_loc'] = -322.9
-    if not params['quit']:
-        params['variables']['z_loc_1'] = 450.4
-    if not params['quit']:
-        params['variables']['z_loc_2'] = 424.3
-    for i in range(int(3)):
-        if params['quit']:
-            break
-        for i in range(int(7)):
-            if params['quit']:
-                break
-            for i in range(int(1)):
-                if params['quit']:
-                    break
-                if arm.error_code == 0 and not params['quit']:
-                    code = arm.set_position(*[params['variables'].get('x_loc_1', 0),params['variables'].get('y_loc', 0),params['variables'].get('z_loc_1', 0),180,0,0], speed=params['speed'], mvacc=params['acc'], radius=-1, wait=True)
-                    if code != 0:
-                        params['quit'] = True
-                        pprint('set_position, code={}'.format(code))
-                if arm.error_code == 0 and not params['quit']:
-                    code = arm.set_position(*[params['variables'].get('x_loc_2', 0),params['variables'].get('y_loc', 0),params['variables'].get('z_loc_2', 0),180,0,0], speed=params['speed'], mvacc=params['acc'], radius=-1, wait=True)
-                    if code != 0:
-                        params['quit'] = True
-                        pprint('set_position, code={}'.format(code))
-            if arm.error_code == 0 and not params['quit']:
-                code = arm.set_position(*[params['variables'].get('x_loc_1', 0),params['variables'].get('y_loc', 0),params['variables'].get('z_loc_1', 0),180,0,0.1], speed=params['speed'], mvacc=params['acc'], radius=-1, wait=True)
-                if code != 0:
-                    params['quit'] = True
-                    pprint('set_position, code={}'.format(code))
-            if not params['quit']:
-                params['variables']['y_loc'] += 18
-            if arm.error_code == 0 and not params['quit']:
-                code = arm.set_position(*[params['variables'].get('x_loc_1', 0),params['variables'].get('y_loc', 0),params['variables'].get('z_loc_1', 0),180,0,0.1], speed=params['speed'], mvacc=params['acc'], radius=-1, wait=True)
-                if code != 0:
-                    params['quit'] = True
-                    pprint('set_position, code={}'.format(code))
-        if not params['quit']:
-            params['variables']['y_loc'] += -108
-        if not params['quit']:
-            params['variables']['x_loc_1'] += 18
-        if not params['quit']:
-            params['variables']['x_loc_2'] += 18
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def quad_0_location():
-    print('Running ' + 'quad_0_location' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 5
-    if not params['quit']:
-        params['acc'] = 100
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[-77.5, -36.0, -36.3, 72.3, -180.0], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=None)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def enter_vial():
-    print('Running ' + 'enter_vial' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 10
-    if not params['quit']:
-        params['angle_speed'] = 1
-    if not params['quit']:
-        params['acc'] = 1
-    if not params['quit']:
-        params['angle_acc'] = 1
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[18.2, -9.1, -22.6, 31.7, 18.2], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=-1.0)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    for i in range(int(8)):
-        if params['quit']:
-            break
-        if arm.error_code == 0 and not params['quit']:
-            code = arm.set_position(x=-1, speed=params['speed'], mvacc=params['acc'], relative=True, wait=True)
-            if code != 0:
-                params['quit'] = True
-                pprint('set_position, code={}'.format(code))
-        if arm.error_code == 0 and not params['quit']:
-            code = arm.set_position(z=-3.5, speed=params['speed'], mvacc=params['acc'], relative=True, wait=True)
-            if code != 0:
-                params['quit'] = True
-                pprint('set_position, code={}'.format(code))
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def quad_3_location():
-    print('Running ' + 'quad_3_location' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['speed'] = 5
-    if not params['quit']:
-        params['acc'] = 100
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[-106.2, -35.4, -36.8, 72.2, -180.0], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=None)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
-def above_evolver():
-    print('Running ' + 'above_evolver' + '...')    
-    
-    # Register connect changed callback
-    def connect_changed_callback(data):
-        if data and not data['connected']:
-            params['quit'] = True
-            pprint('disconnect, connected={}, reported={}, quit'.format(data['connected'], data['reported']))
-            arm.release_connect_changed_callback(error_warn_change_callback)
-    arm.register_connect_changed_callback(connect_changed_callback)
-    
-    if not params['quit']:
-        params['acc'] = 10
-    if not params['quit']:
-        params['speed'] = 5
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[0.0, -53.0, -46.1, 99.1, 0.0], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=False, radius=20.0)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    if arm.error_code == 0 and not params['quit']:
-        code = arm.set_servo_angle(angle=[-81.2, -27.8, -60.9, 88.8, -81.2], speed=params['angle_speed'], mvacc=params['angle_acc'], wait=True, radius=20.0)
-        if code != 0:
-            params['quit'] = True
-            pprint('set_servo_angle, code={}'.format(code))
-    
-    # release all event
-    if hasattr(arm, 'release_count_changed_callback'):
-        arm.release_count_changed_callback(count_changed_callback)
-
 ## This script is to define smoothieboard related functions, such as priming fluidic lines or dispensing volumes into vials
-def convert_to_steps(volume, test=False):
-    if test:
-        return 0
-    else:
-        return 100
 
 def write_gcode(mode, instructions, gcode='', gcode_path=''):
     """ Write gcode file for dispensing volumes into vials """
@@ -473,29 +195,6 @@ def write_gcode(mode, instructions, gcode='', gcode_path=''):
         f.write(gcode)
         f.close()
 
-def media_transform(fluid_command, test=False):
-    """ Convert fluid_command from eVOLVER server to pump motor steps for vial dilutions. Information will be stored in an read accessible JSON file """
-    dilutions = {}
-
-    # scan through fluid command and convert dilution volumes to stepper motor steps based on volume --> steps calibration
-    for pump in fluid_command:
-        pump_json = {}
-
-        for quad in range(len(fluid_command[pump])):
-            quad_name = 'quad_{0}'.format(quad)
-            pump_json[quad_name] = {}
-
-            for vial in range(18):
-                vial_name = 'vial_{0}'.format(vial)
-                pump_json[quad_name][vial_name] = convert_to_steps(fluid_command[pump][quad][vial], test)
-        dilutions[pump] = pump_json
-
-    # save dilutiion steps to JSON
-    dilutions_path = os.path.join(DILUTIONS_PATH, 'dilutions.json')
-    with open(dilutions_path, 'w') as f:
-        json.dump(dilutions, f)
-    return dilutions
-
 async def post_gcode_async(session, gcode_path, smoothie):
     """ Return response status of POST request to Ocotprint server for actuating syringe pump """
     payload = {'file': open(gcode_path, 'rb'), 'print':'true'}
@@ -559,9 +258,8 @@ async def prime_pumps_helper():
     print_string = ''
 
     for pump in PUMP_SETTINGS['pumps']:
-        if PUMP_SETTINGS['pumps'][pump]['type'] == 'fluid':
-            print_string = print_string + '{0} pump'.format(pump)
-            instructions[pump] = PUMP_SETTINGS['priming_steps']
+        print_string = print_string + '{0} pump'.format(pump)
+        instructions[pump] = PUMP_SETTINGS['priming_steps']
     write_gcode('prime_pumps', instructions)
 
     # create tasks for prime pump events
@@ -619,9 +317,8 @@ async def fill_tubing_helper():
     print_string = ''
 
     for pump in PUMP_SETTINGS['pumps']:
-        if PUMP_SETTINGS['pumps'][pump]['type'] == 'fluid':
-            print_string = print_string + '{0} pump '.format(pump)
-            instructions[pump] = 300
+        print_string = print_string + '{0} pump '.format(pump)
+        instructions[pump] = 300
     write_gcode('fill_tubing_in', instructions)
     write_gcode('fill_tubing_out', instructions)
 
@@ -711,7 +408,7 @@ async def fill_tubing_helper():
     await session.close()
     return 'fill tubing cycle success'
 
-async def influx_helper(fluid_command, quads, test=False):
+async def influx_helper(pump_commands):
     """ Main method for dilution routine for specified quads. Called every time eVOLVER client sends fluid_command to fluidics server """
     # start asyncio Client Session
     session = aiohttp.ClientSession()
@@ -721,12 +418,8 @@ async def influx_helper(fluid_command, quads, test=False):
     coordinate_config = json.load(f1)
     f1.close()
 
-    # get dilution steps for fluid command
-    test = bool(test)
-    dilutions = media_transform(fluid_command, test)
-
     # loop through vials and execute fluidic events
-    for quad in quads:
+    for quad in pump_commands['active_quads']:
         quad_name = 'quad_{0}'.format(quad)
 
         # create data structure to map fluidic events
@@ -776,7 +469,7 @@ async def influx_helper(fluid_command, quads, test=False):
                     active_vial_name = 'vial_{0}'.format(active_vials[i])
                     active_vial = active_vials[i]
                     active_pump = active_pumps[i]
-                    pump_steps = dilutions[active_pump][quad_name][active_vial_name]
+                    pump_steps = pump_commands[active_pump][quad_name][active_vial_name]
                     instructions[active_pump] = pump_steps
                 write_gcode('volume_in', instructions)
                 write_gcode('volume_out', instructions)
@@ -956,10 +649,11 @@ async def pipette_next_step(row_num, quad_name, change_row, coordinate_config):
 
     return ['arm_moved', coordinate_config]
 ## This script is to define all API calls to the flask server. Ensure that functions called in routes exist are pulled ./functions or ./manual
-
-# #########################   Example Scripts ####################################
-# #########################   End of Example Scripts ####################################
-
+@app.route('/get_pump_settings', methods=['POST', 'GET'])
+@auth.login_required
+def get_pump_settings():
+    """ GET pump settings from fluidics_server.conf file """
+    return PUMP_SETTINGS
 
 @app.route('/arm_test', methods=['POST'])
 @auth.login_required
@@ -1023,12 +717,10 @@ def prime_pump():
 @auth.login_required
 def influx():
     """ Perform fluidic influx for target vial. Pump in and dispense dilution volume """
-    fluid_command = request.json['fluid_command']
-    quads = request.json['quads']
-    test = request.json['test']
+    pump_commands = request.json
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(influx_helper(fluid_command, quads, test))
+    loop.run_until_complete(influx_helper(pump_commands))
     return 'influx success'
 if __name__ == '__main__':
     with open(CONFIG_PATH,'r') as config:

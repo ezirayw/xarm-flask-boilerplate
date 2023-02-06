@@ -1,0 +1,12 @@
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+
+# Auto Generated Files #
+fluidics/fluidics_server.py
+server_compile/blockly_download/
+server_compile/python_blockly_functions/
+
+# blockly downloads #
+*.gz
